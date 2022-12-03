@@ -3,13 +3,13 @@
     : Path.Join(Directory.GetCurrentDirectory(), "..", "..", "..", "input.txt");
 
 var rounds = File.ReadLines(inputPath)
-        .Select(r => r
-            .Split(' ')
-            .Select(c => c.ToCharArray().First())
-            .ToArray()
-        )
-        .Select(r => new Round(r[1], r[0]))
-        .ToArray();
+    .Select(r => r
+        .Split(' ')
+        .Select(c => c.ToCharArray().First())
+        .ToArray()
+    )
+    .Select(r => new Round { OpponentChoice = r[0], PlayerCode = r[1] })
+    .ToArray();
 
 int GetChoiceScore(char choice) => choice switch
 {
@@ -81,7 +81,7 @@ char GetPlayerChoice(char opponentChoice, char outcomeCode) => opponentChoice sw
 
 var newScores = rounds.Select(r =>
 {
-    var playerChoice = GetPlayerChoice(r.OpponentChoice,r.PlayerCode);
+    var playerChoice = GetPlayerChoice(r.OpponentChoice, r.PlayerCode);
     return GetOutcomeScore(playerChoice, r.OpponentChoice) + GetChoiceScore(playerChoice);
 });
 
@@ -89,4 +89,8 @@ var newTotal = newScores.Sum();
 
 Console.WriteLine($"Part 2: {newTotal}");
 
-internal record Round(char PlayerCode, char OpponentChoice);
+internal struct Round
+{
+    public char PlayerCode { get; init; }
+    public char OpponentChoice { get; init; }
+}
